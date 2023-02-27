@@ -29,17 +29,22 @@ jobs:
         uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
         with:
           go-version: 1.20.1
-      - name: Test
+      - name: Build
         if: ${{ github.event_name != 'workflow_dispatch' }}
         uses: goreleaser/goreleaser-action@f82d6c1c344bcacabba2c841718984797f664a6b
         with:
-          version: latest
-          args: release --rm-dist --snapshot
+          version: 1.15.2
+          args: release --clean --snapshot
+      - name: Tag
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        env:
+          VERSION: ${{ github.event.inputs.version }}
+        run: git tag "$VERSION"
       - name: Release
         if: ${{ github.event_name == 'workflow_dispatch' }}
         uses: goreleaser/goreleaser-action@f82d6c1c344bcacabba2c841718984797f664a6b
         with:
-          version: ${{ github.event.inputs.version }}
-          args: release --rm-dist
+          version: 1.15.2
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
