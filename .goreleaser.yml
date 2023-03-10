@@ -1,5 +1,8 @@
 project_name: tpm-fido
 
+env:
+  - CGO_ENABLED=0
+
 builds:
   - goos: [linux]
     goarch: [amd64, arm64]
